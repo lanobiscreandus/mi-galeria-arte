@@ -2,37 +2,70 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabaseClient';
 import Auth from './components/Auth';
 import ArtistProfile from './components/ArtistProfile';
+import PublicGallery from './components/PublicGallery'; // Crearemos este abajo
+import { Menu, X, Paintbrush, ShoppingCart, Info, User } from 'lucide-react';
 
 export default function App() {
   const [session, setSession] = useState(null);
+  const [view, setView] = useState('home'); // home, login, admin
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    supabase.auth.onAuthStateChange((_event, session) => setSession(session));
   }, []);
 
+  // Menú de Navegación
+  const Navbar = () => (
+    <nav className="absolute top-0 w-full z-50 flex items-center justify-between p-6 text-white bg-black/20 backdrop-blur-sm">
+      <div className="flex gap-8 text-sm uppercase tracking-widest font-semibold">
+        <button onClick={() => setView('home')} className="hover:text-amber-400 flex items-center gap-2"><Paintbrush size={16}/> Arte</button>
+        <button className="hover:text-amber-400 flex items-center gap-2"><ShoppingCart size={16}/> Compra</button>
+        <button onClick={() => setView('login')} className="hover:text-amber-400 flex items-center gap-2"><User size={16}/> Venta</button>
+        <button className="hover:text-amber-400 flex items-center gap-2"><Info size={16}/> Información</button>
+      </div>
+    </nav>
+  );
+
+  if (view === 'login' && !session) return <Auth goBack={() => setView('home')} />;
+  if (session && view === 'login') return <ArtistProfile session={session} />;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {!session ? (
-        <Auth />
-      ) : (
-        <>
-          <nav className="p-4 bg-white border-b flex justify-between items-center shadow-sm">
-            <span className="font-bold text-xl text-indigo-600">ArtePanel</span>
-            <button 
-              onClick={() => supabase.auth.signOut()}
-              className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition"
-            >
-              Cerrar Sesión
+    <div className="relative">
+      <Navbar />
+      
+      {/* SECCIÓN SUPERIOR (HERO) */}
+      <header className="hero-bg h-[80vh] flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-6xl md:text-8xl text-white font-title mb-6 drop-shadow-lg">
+          Tu Galería Online
+        </h1>
+        <div className="max-w-2xl bg-white/10 backdrop-blur-md p-8 rounded-sm border border-white/20">
+          <p className="text-white text-lg md:text-xl font-light leading-relaxed">
+            Bienvenido al espacio donde el arte cobra vida. Conectamos a creadores visionarios 
+            con coleccionistas apasionados. Explora obras únicas o únete a nuestra comunidad 
+            para exhibir tu talento al mundo.
+          </p>
+          <div className="mt-8 flex gap-4 justify-center">
+            <button onClick={() => window.scrollTo({top: 800, behavior: 'smooth'})} className="bg-white text-black px-8 py-3 font-bold hover:bg-amber-400 transition">
+              Explorar Obras
             </button>
-          </nav>
-          <ArtistProfile session={session} />
-        </>
-      )}
+            <button onClick={() => setView('login')} className="border-2 border-white text-white px-8 py-3 font-bold hover:bg-white hover:text-black transition">
+              Vender mi Arte
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* SECCIÓN DE ARTISTAS Y OBRAS */}
+      <main className="py-20 px-6 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-title text-center mb-16 underline decoration-amber-500 underline-offset-8">
+          Artistas Destacados
+        </h2>
+        <PublicGallery />
+      </main>
+
+      <footer className="bg-black text-white p-10 text-center text-sm tracking-widest">
+        &copy; 2024 TU GALERÍA ONLINE - TODOS LOS DERECHOS RESERVADOS
+      </footer>
     </div>
   );
 }
