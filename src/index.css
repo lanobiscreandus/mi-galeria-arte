@@ -1,28 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --overlay: rgba(0, 0, 0, 0.6);
+  --pastel-bg: #fdfaf6; /* Crema suave */
+  --pastel-card: #ffffff;
+  --pastel-accent: #e9d5ca; /* Rosa óleo */
+  --pastel-olive: #d4e2d4; /* Verde salvia */
+  --pastel-text: #5a5a5a;
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  background-color: #f8f8f8;
+  font-family: 'Quicksand', sans-serif;
+  background-color: var(--pastel-bg);
+  color: var(--pastel-text);
 }
 
-/* Fondo de mosaico de arte para el Hero */
 .hero-bg {
-  background: linear-gradient(var(--overlay), var(--overlay)), 
-              url('https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80');
+  /* Imagen de fondo con textura de pinceladas */
+  background: linear-gradient(rgba(253, 250, 246, 0.5), rgba(253, 250, 246, 0.5)), 
+              url('https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
 }
 
 .font-title {
   font-family: 'Playfair Display', serif;
+  letter-spacing: -0.02em;
+}
+
+/* Efecto de borde suave como lienzo */
+.canvas-card {
+  border-radius: 2rem;
+  border: 1px solid rgba(233, 213, 202, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
