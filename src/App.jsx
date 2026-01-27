@@ -76,7 +76,7 @@ export default function App() {
   const [view, setView] = useState('home'); 
 
   // TU CORREO AQUÍ (El que usarás para administrar)
-  const ADMIN_EMAIL = "tu-correo@ejemplo.com"; 
+  const ADMIN_EMAIL = "nobiankasilva@gmail.com"; 
 
   // ... (useEffect igual)
 
