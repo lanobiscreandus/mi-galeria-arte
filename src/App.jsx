@@ -69,3 +69,35 @@ export default function App() {
     </div>
   );
 }
+// ... (mismo código anterior)
+
+export default function App() {
+  const [session, setSession] = useState(null);
+  const [view, setView] = useState('home'); 
+
+  // TU CORREO AQUÍ (El que usarás para administrar)
+  const ADMIN_EMAIL = "tu-correo@ejemplo.com"; 
+
+  // ... (useEffect igual)
+
+  const Navbar = () => (
+    <nav className="absolute top-0 w-full z-50 flex items-center justify-between p-6 text-white bg-black/20 backdrop-blur-sm">
+      <div className="flex gap-8 text-sm uppercase tracking-widest font-semibold">
+        <button onClick={() => setView('home')} className="hover:text-amber-400">Arte</button>
+        
+        {/* Solo mostrar si es el Admin */}
+        {session?.user.email === ADMIN_EMAIL && (
+          <button onClick={() => setView('admin')} className="text-amber-400 font-bold underline">PANEL ADMIN</button>
+        )}
+
+        <button onClick={() => setView('login')} className="hover:text-amber-400">
+          {session ? 'Mi Perfil' : 'Venta / Registro'}
+        </button>
+      </div>
+    </nav>
+  );
+
+  // Lógica de vistas
+  if (view === 'admin' && session?.user.email === ADMIN_EMAIL) return <AdminPanel goBack={() => setView('home')} />;
+  if (view === 'login' && !session) return <Auth goBack={() => setView('home')} />;
+  // ... resto del código
