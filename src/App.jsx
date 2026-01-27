@@ -2,32 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabaseClient';
 import Auth from './components/Auth';
 import ArtistProfile from './components/ArtistProfile';
-import PublicGallery from './components/PublicGallery'; // Crearemos este abajo
-import { Menu, X, Paintbrush, ShoppingCart, Info, User } from 'lucide-react';
+import PublicGallery from './components/PublicGallery';
+import AdminPanel from './components/AdminPanel';
+import { Paintbrush, ShoppingCart, Info, User } from 'lucide-react';
 
 export default function App() {
   const [session, setSession] = useState(null);
-  const [view, setView] = useState('home'); // home, login, admin
+  const [view, setView] = useState('home'); 
+
+  // CAMBIA ESTO POR TU CORREO REAL
+  const ADMIN_EMAIL = "tu-correo@ejemplo.com"; 
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
     supabase.auth.onAuthStateChange((_event, session) => setSession(session));
   }, []);
 
-  // Menú de Navegación
   const Navbar = () => (
     <nav className="absolute top-0 w-full z-50 flex items-center justify-between p-6 text-white bg-black/20 backdrop-blur-sm">
       <div className="flex gap-8 text-sm uppercase tracking-widest font-semibold">
-        <button onClick={() => setView('home')} className="hover:text-amber-400 flex items-center gap-2"><Paintbrush size={16}/> Arte</button>
+        <button onClick={() => setView('home')} className="hover:text-amber-400 flex items-center gap-2 border-b border-transparent hover:border-amber-400 transition">
+          <Paintbrush size={16}/> Arte
+        </button>
         <button className="hover:text-amber-400 flex items-center gap-2"><ShoppingCart size={16}/> Compra</button>
-        <button onClick={() => setView('login')} className="hover:text-amber-400 flex items-center gap-2"><User size={16}/> Venta</button>
+        
+        {session?.user.email === ADMIN_EMAIL && (
+          <button onClick={() => setView('admin')} className="text-amber-400 font-bold underline">PANEL ADMIN</button>
+        )}
+
+        <button onClick={() => setView('login')} className="hover:text-amber-400 flex items-center gap-2">
+          <User size={16}/> {session ? 'Mi Perfil' : 'Venta'}
+        </button>
         <button className="hover:text-amber-400 flex items-center gap-2"><Info size={16}/> Información</button>
       </div>
     </nav>
   );
 
-  if (view === 'login' && !session) return <Auth goBack={() => setView('home')} />;
-  if (session && view === 'login') return <ArtistProfile session={session} />;
+  // Lógica de navegación
+  if (view === 'admin' && session?.user.email === ADMIN_EMAIL) {
+    return <AdminPanel goBack={() => setView('home')} />;
+  }
+
+  if (view === 'login') {
+    if (!session) return <Auth goBack={() => setView('home')} />;
+    return <ArtistProfile session={session} />;
+  }
 
   return (
     <div className="relative">
@@ -57,47 +76,15 @@ export default function App() {
 
       {/* SECCIÓN DE ARTISTAS Y OBRAS */}
       <main className="py-20 px-6 max-w-7xl mx-auto">
-        <h2 className="text-3xl font-title text-center mb-16 underline decoration-amber-500 underline-offset-8">
-          Artistas Destacados
+        <h2 className="text-4xl font-title text-center mb-16 underline decoration-amber-500 underline-offset-8">
+          Colección Disponible
         </h2>
         <PublicGallery />
       </main>
 
       <footer className="bg-black text-white p-10 text-center text-sm tracking-widest">
-        &copy; 2024 TU GALERÍA ONLINE - TODOS LOS DERECHOS RESERVADOS
+        &copy; 2026 TU GALERÍA ONLINE - UN ESPACIO PARA EL ARTE
       </footer>
     </div>
   );
 }
-// ... (mismo código anterior)
-
-export default function App() {
-  const [session, setSession] = useState(null);
-  const [view, setView] = useState('home'); 
-
-  // TU CORREO AQUÍ (El que usarás para administrar)
-  const ADMIN_EMAIL = "nobiankasilva@gmail.com"; 
-
-  // ... (useEffect igual)
-
-  const Navbar = () => (
-    <nav className="absolute top-0 w-full z-50 flex items-center justify-between p-6 text-white bg-black/20 backdrop-blur-sm">
-      <div className="flex gap-8 text-sm uppercase tracking-widest font-semibold">
-        <button onClick={() => setView('home')} className="hover:text-amber-400">Arte</button>
-        
-        {/* Solo mostrar si es el Admin */}
-        {session?.user.email === ADMIN_EMAIL && (
-          <button onClick={() => setView('admin')} className="text-amber-400 font-bold underline">PANEL ADMIN</button>
-        )}
-
-        <button onClick={() => setView('login')} className="hover:text-amber-400">
-          {session ? 'Mi Perfil' : 'Venta / Registro'}
-        </button>
-      </div>
-    </nav>
-  );
-
-  // Lógica de vistas
-  if (view === 'admin' && session?.user.email === ADMIN_EMAIL) return <AdminPanel goBack={() => setView('home')} />;
-  if (view === 'login' && !session) return <Auth goBack={() => setView('home')} />;
-  // ... resto del código
