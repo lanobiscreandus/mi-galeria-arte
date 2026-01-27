@@ -1,90 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from './lib/supabaseClient';
-import Auth from './components/Auth';
-import ArtistProfile from './components/ArtistProfile';
-import PublicGallery from './components/PublicGallery';
-import AdminPanel from './components/AdminPanel';
-import { Paintbrush, ShoppingCart, Info, User } from 'lucide-react';
+// Dentro de tu App.jsx, modifica el header y el Navbar:
 
-export default function App() {
-  const [session, setSession] = useState(null);
-  const [view, setView] = useState('home'); 
-
-  // CAMBIA ESTO POR TU CORREO REAL
-  const ADMIN_EMAIL = "tu-correo@ejemplo.com"; 
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
-    supabase.auth.onAuthStateChange((_event, session) => setSession(session));
-  }, []);
-
-  const Navbar = () => (
-    <nav className="absolute top-0 w-full z-50 flex items-center justify-between p-6 text-white bg-black/20 backdrop-blur-sm">
-      <div className="flex gap-8 text-sm uppercase tracking-widest font-semibold">
-        <button onClick={() => setView('home')} className="hover:text-amber-400 flex items-center gap-2 border-b border-transparent hover:border-amber-400 transition">
-          <Paintbrush size={16}/> Arte
-        </button>
-        <button className="hover:text-amber-400 flex items-center gap-2"><ShoppingCart size={16}/> Compra</button>
-        
-        {session?.user.email === ADMIN_EMAIL && (
-          <button onClick={() => setView('admin')} className="text-amber-400 font-bold underline">PANEL ADMIN</button>
-        )}
-
-        <button onClick={() => setView('login')} className="hover:text-amber-400 flex items-center gap-2">
-          <User size={16}/> {session ? 'Mi Perfil' : 'Venta'}
-        </button>
-        <button className="hover:text-amber-400 flex items-center gap-2"><Info size={16}/> Información</button>
-      </div>
-    </nav>
-  );
-
-  // Lógica de navegación
-  if (view === 'admin' && session?.user.email === ADMIN_EMAIL) {
-    return <AdminPanel goBack={() => setView('home')} />;
-  }
-
-  if (view === 'login') {
-    if (!session) return <Auth goBack={() => setView('home')} />;
-    return <ArtistProfile session={session} />;
-  }
-
-  return (
-    <div className="relative">
-      <Navbar />
-      
-      {/* SECCIÓN SUPERIOR (HERO) */}
-      <header className="hero-bg h-[80vh] flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-6xl md:text-8xl text-white font-title mb-6 drop-shadow-lg">
-          Tu Galería Online
-        </h1>
-        <div className="max-w-2xl bg-white/10 backdrop-blur-md p-8 rounded-sm border border-white/20">
-          <p className="text-white text-lg md:text-xl font-light leading-relaxed">
-            Bienvenido al espacio donde el arte cobra vida. Conectamos a creadores visionarios 
-            con coleccionistas apasionados. Explora obras únicas o únete a nuestra comunidad 
-            para exhibir tu talento al mundo.
-          </p>
-          <div className="mt-8 flex gap-4 justify-center">
-            <button onClick={() => window.scrollTo({top: 800, behavior: 'smooth'})} className="bg-white text-black px-8 py-3 font-bold hover:bg-amber-400 transition">
-              Explorar Obras
-            </button>
-            <button onClick={() => setView('login')} className="border-2 border-white text-white px-8 py-3 font-bold hover:bg-white hover:text-black transition">
-              Vender mi Arte
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* SECCIÓN DE ARTISTAS Y OBRAS */}
-      <main className="py-20 px-6 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-title text-center mb-16 underline decoration-amber-500 underline-offset-8">
-          Colección Disponible
-        </h2>
-        <PublicGallery />
-      </main>
-
-      <footer className="bg-black text-white p-10 text-center text-sm tracking-widest">
-        &copy; 2026 TU GALERÍA ONLINE - UN ESPACIO PARA EL ARTE
-      </footer>
+const Navbar = () => (
+  <nav className="absolute top-0 w-full z-50 flex justify-center p-8">
+    <div className="flex gap-10 text-[11px] uppercase tracking-[0.3em] font-bold text-white/80">
+      <button onClick={() => setView('home')} className="hover:text-white transition">Galería</button>
+      <button onClick={() => setView('login')} className="hover:text-white transition">Comunidad</button>
+      <button className="hover:text-white transition">Sobre el Arte</button>
     </div>
-  );
-}
+  </nav>
+);
+
+// En el return principal:
+<header className="hero-bg h-[90vh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
+  <div className="relative z-10">
+    <h1 className="text-7xl md:text-9xl text-white font-title mb-4 drop-shadow-2xl opacity-95">
+      Tu Galería Online
+    </h1>
+    <div className="w-24 h-1 bg-[#e9d5ca] mx-auto mb-8 rounded-full"></div>
+    <p className="max-w-xl text-white/90 text-lg font-light italic leading-loose tracking-wide backdrop-blur-[2px]">
+      "El arte es la libertad de expresar lo que el alma no puede decir con palabras."
+    </p>
+    <div className="mt-12 flex gap-6 justify-center">
+      <button onClick={() => window.scrollTo({top: 900, behavior: 'smooth'})} 
+              className="bg-white/20 backdrop-blur-md border border-white/30 text-white px-10 py-4 rounded-full hover:bg-white hover:text-[#5a5a5a] transition-all duration-500 font-bold tracking-widest text-xs uppercase">
+        Explorar
+      </button>
+    </div>
+  </div>
+</header>
