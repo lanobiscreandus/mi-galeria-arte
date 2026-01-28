@@ -1,25 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Quicksand', sans-serif;
-  background-color: #fdfbf7; /* Crema suave como lienzo */
-  color: #5d5d5d;
+:root {
+  --bg-cream: #F9F7F2;
+  --text-dark: #4A403A;
+  --btn-sage: #9FB8AD; /* Verde salvia del botón derecho */
+  --btn-sand: #E8DCC4; /* Color arena del botón izquierdo */
 }
 
-/* Títulos elegantes */
-h1, h2, h3 {
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+}
+
+.font-serif {
   font-family: 'Playfair Display', serif;
 }
 
-/* Clase para el fondo artístico del Hero */
-.hero-oil {
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
-              url('https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80');
+/* Fondo estilo Óleo Abstracto */
+.hero-oil-texture {
+  background: url('https://images.unsplash.com/photo-1547891654-e66ed7ebb968?q=80&w=2070&auto=format&fit=crop');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  position: relative;
+}
+
+/* Efecto de cristal esmerilado (Glassmorphism) para el cuadro de texto */
+.glass-box {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* Tarjeta de obra muy redondeada */
+.art-card {
+  border-radius: 1.5rem; /* Bordes muy curvos */
+  background: white;
+  transition: transform 0.3s ease;
+}
+
+.art-card:hover {
+  transform: translateY(-5px);
 }
