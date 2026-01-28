@@ -4,7 +4,7 @@ import Auth from './components/Auth';
 import ArtistProfile from './components/ArtistProfile';
 import PublicGallery from './components/PublicGallery';
 import AdminPanel from './components/AdminPanel';
-import { Palette, User } from 'lucide-react';
+import { ShoppingBag, User, Search } from 'lucide-react';
 
 export default function App() {
   const [session, setSession] = useState(null);
@@ -16,75 +16,65 @@ export default function App() {
     supabase.auth.onAuthStateChange((_event, session) => setSession(session));
   }, []);
 
-  // Lógica de Vistas
   if (view === 'admin' && session?.user.email === ADMIN_EMAIL) return <AdminPanel goBack={() => setView('home')} />;
-  
   if (view === 'login') {
     if (!session) return <Auth goBack={() => setView('home')} />;
     return <ArtistProfile session={session} />;
   }
 
   return (
-    <div className="min-h-screen">
-      {/* MENÚ SUPERIOR TRANSPARENTE (Solo lo esencial) */}
-      <nav className="absolute top-0 w-full z-50 p-6 flex justify-between items-center text-white/90 font-bold tracking-widest text-xs uppercase">
-        <span>Tu Galería Online</span>
+    <div className="min-h-screen flex flex-col">
+      {/* NAVBAR: Minimalista y transparente */}
+      <nav className="absolute top-0 w-full z-50 px-8 py-6 flex justify-between items-center text-white/90">
+        <div className="text-xs font-bold tracking-[0.2em] uppercase">Tu Galería</div>
         <div className="flex gap-6">
-           {session?.user.email === ADMIN_EMAIL && (
-              <button onClick={() => setView('admin')} className="hover:text-amber-200 underline">Admin</button>
-           )}
-           {session && <button onClick={() => setView('login')}>Mi Perfil</button>}
+           <button onClick={() => setView('login')} className="hover:text-white transition"><User size={20}/></button>
+           <button className="hover:text-white transition"><ShoppingBag size={20}/></button>
         </div>
       </nav>
 
-      {/* SECCIÓN HERO (Título + Bienvenida + Botones) */}
-      <header className="hero-oil min-h-[85vh] flex flex-col items-center justify-center text-center px-4">
-        
-        {/* Título Blanco Centrado */}
-        <h1 className="text-6xl md:text-8xl text-white mb-6 drop-shadow-lg italic">
-          Tu Galería Online
-        </h1>
-        
-        {/* Texto Explicativo */}
-        <p className="text-white/90 text-lg md:text-xl max-w-2xl font-light mb-10 leading-relaxed backdrop-blur-[2px] rounded-xl p-4">
-          Un espacio donde el arte fluye. Descubre obras únicas pintadas con alma, 
-          o únete a nuestra comunidad para compartir tu propia visión del mundo.
-        </p>
+      {/* HERO SECTION: Tal cual la imagen */}
+      <header className="hero-oil-texture h-[85vh] flex items-center justify-center px-4">
+        {/* Capa oscura suave para legibilidad */}
+        <div className="absolute inset-0 bg-black/10"></div>
 
-        {/* Botones Redondeados y Pasteles */}
-        <div className="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
-          
-          {/* Botón 1: Ver Galerías (Verde Pastel) */}
-          <button 
-            onClick={() => document.getElementById('galeria').scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#d4e2d4] text-[#4a5d4a] px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-[#c4dcc4] hover:scale-105 transition-all shadow-lg w-64 md:w-auto flex items-center justify-center gap-2"
-          >
-            <Palette size={18} /> Ver Obras
-          </button>
+        {/* Caja de cristal central */}
+        <div className="glass-box relative z-10 p-12 md:p-16 rounded-[3rem] max-w-4xl w-full text-center flex flex-col items-center">
+          <h1 className="font-serif text-5xl md:text-7xl text-white mb-4 drop-shadow-md">
+            Tu Galería Online
+          </h1>
+          <p className="text-white/90 text-sm md:text-lg font-light tracking-wide mb-10 max-w-xl mx-auto">
+            Descubre la belleza en cada pincelada. Un espacio curado para amantes del arte y creadores visionarios.
+          </p>
 
-          {/* Botón 2: Iniciar Sesión (Amarillo Pastel) */}
-          <button 
-            onClick={() => setView('login')}
-            className="bg-[#f3e5ab] text-[#6d5e48] px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-[#ece095] hover:scale-105 transition-all shadow-lg w-64 md:w-auto flex items-center justify-center gap-2"
-          >
-            <User size={18} /> {session ? 'Ir a mi Estudio' : 'Crear Cuenta / Entrar'}
-          </button>
+          {/* BOTONES FLUIDOS Y PASTEL */}
+          <div className="flex flex-col sm:flex-row gap-6 w-full justify-center">
+            {/* Botón Arena (Izquierda) */}
+            <button 
+               onClick={() => document.getElementById('galeria').scrollIntoView({ behavior: 'smooth' })}
+               className="bg-[#E8DCC4] text-[#5A5046] px-10 py-3 rounded-full font-bold text-sm tracking-widest hover:bg-[#dbcca9] transition shadow-lg"
+            >
+              EXPLORAR OBRAS
+            </button>
+            
+            {/* Botón Verde Salvia (Derecha) */}
+            <button 
+               onClick={() => setView('login')}
+               className="bg-[#9FB8AD] text-white px-10 py-3 rounded-full font-bold text-sm tracking-widest hover:bg-[#8da89c] transition shadow-lg"
+            >
+              VENDER MI ARTE
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* SECCIÓN DE OBRAS */}
-      <main id="galeria" className="py-24 px-4 md:px-10 max-w-7xl mx-auto bg-[#fdfbf7]">
-        <div className="flex flex-col items-center mb-16">
-          <h2 className="text-4xl text-[#5d5d5d] mb-4">Colección Disponible</h2>
-          <div className="h-1 w-20 bg-[#e9d5ca] rounded-full"></div>
-        </div>
-
-        {/* Aquí cargamos la galería rediseñada */}
+      {/* CONTENIDO PRINCIPAL */}
+      <main id="galeria" className="flex-grow py-20 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
         <PublicGallery />
       </main>
 
-      <footer className="text-center py-10 text-[#8a8a8a] text-sm bg-white">
-        <p>&copy; 2026 Tu Galería Online. Hecho con amor al arte.</p>
+      <footer className="text-center py-8 text-[#8a8a8a] text-xs uppercase tracking-widest">
+        &copy; 2026 Tu Galería Online
       </footer>
     </div>
   );
